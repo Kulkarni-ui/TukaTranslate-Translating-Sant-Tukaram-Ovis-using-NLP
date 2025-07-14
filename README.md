@@ -6,7 +6,7 @@ Sant Tukaram’s poetry is rich in metaphor, devotion, and cultural nuance — m
 
 ---
 
-## 🔍 Project Objectives
+## Project Objectives
 
 - Translate 100 ovis from Marathi to English using Hugging Face's `MarianMT` model (`opus-mt-mr-en`)
 - Evaluate translation quality using the **ROUGE-L metric**, more suited to poetic and paraphrased text
@@ -15,7 +15,7 @@ Sant Tukaram’s poetry is rich in metaphor, devotion, and cultural nuance — m
 
 ---
 
-## ✨ Why This Matters
+## Why This Matters
 
 Preserving Sant Tukaram's spiritual legacy and making it accessible globally through AI enables:
 
@@ -27,7 +27,7 @@ Preserving Sant Tukaram's spiritual legacy and making it accessible globally thr
 
 ---
 
-## 📚 Dataset
+## Dataset
 
 - Contains 100 Ovis with the following columns:
   - `ovi_marathi`: Original Ovi in Marathi (Devanagari script)
@@ -37,7 +37,7 @@ Preserving Sant Tukaram's spiritual legacy and making it accessible globally thr
 
 ---
 
-## 🧠 Model Details
+## Model Details
 
 - **Model used**: `Helsinki-NLP/opus-mt-mr-en` (Marathi to English)
 - **Library**: Hugging Face Transformers
@@ -53,7 +53,7 @@ model = MarianMTModel.from_pretrained(model_name)
 
 ---
 
-## 📈 Evaluation Metric
+## Evaluation Metric
 
 - Used **ROUGE-L F1 Score** to evaluate translation quality.
 - Captures semantic similarity via **longest common subsequence**.
@@ -61,7 +61,7 @@ model = MarianMTModel.from_pretrained(model_name)
 
 ---
 
-## 📊 Key Results
+## Key Results
 
 | Metric               | Value     |
 |----------------------|-----------|
@@ -84,7 +84,7 @@ Don't pay attention to your identity.
 
 ---
 
-## ⚠️ Observations
+## Observations
 
 - Model struggled with metaphor-rich, emotionally nuanced content.
 - Some translations were overly generic or contextually incorrect.
@@ -93,7 +93,7 @@ Don't pay attention to your identity.
 
 ---
 
-## 🚀 Future Scope
+## Future Scope
 
 - Fine-tune MarianMT on a **larger corpus of Marathi devotional texts**.
 - Explore **IndicTrans2** or **human-AI post-editing pipelines**.
@@ -102,7 +102,7 @@ Don't pay attention to your identity.
 
 ---
 
-## 📂 Folder Structure
+## Folder Structure
 
 ```
 📁 NLP_Saint_Tukaram/
@@ -115,7 +115,7 @@ Don't pay attention to your identity.
 
 ---
 
-## 🙏 Acknowledgements
+## Acknowledgements
 
 - Sant Tukaram Maharaj and the Bhakti movement
 - HuggingFace Transformers team
