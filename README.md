@@ -1,128 +1,148 @@
-# 🕉️ TukaTranslate: Translating Saint Tukaram's Ovis Using NLP
 
-This project aims to translate the deeply spiritual ovis (verses) of Sant Tukaram, a revered saint of the Bhakti movement, from Marathi to English using modern Natural Language Processing (NLP) techniques.
+# 🕉️ TukaTranslate: Translating Sant Tukaram’s Ovis Using Meta’s NLLB Model
 
-Sant Tukaram’s poetry is rich in metaphor, devotion, and cultural nuance — making it both a linguistic and spiritual challenge to translate. While traditional machine translation focuses on literal accuracy, this project embraces a meaning-preserving approach by comparing manually translated ovis with outputs from a pretrained MarianMT model
-
----
-
-## Project Objectives
-
-- Translate 100 ovis from Marathi to English using Hugging Face's `MarianMT` model (`opus-mt-mr-en`)
-- Evaluate translation quality using the **ROUGE-L metric**, more suited to poetic and paraphrased text
-- Highlight the limitations of machine translation for devotional literature
-- Encourage human-AI collaboration for culturally significant NLP tasks
+This project focuses on translating the devotional ovis (verses) of **Sant Tukaram**, a revered saint-poet from the Bhakti movement, using modern NLP techniques. Unlike typical translation tasks, Tukaram's verses are metaphorical and spiritually intense — demanding a meaning-preserving translation approach.
 
 ---
 
-## Why This Matters
+## 📌 Objectives
 
-Preserving Sant Tukaram's spiritual legacy and making it accessible globally through AI enables:
-
-- **Cultural preservation** of Marathi literature.
-- **Cross-lingual understanding** of Bhakti-era spirituality.
-- A bridge between **ancient wisdom and modern technology**.
-- Preserving and sharing Tukaram's verses with a wider, global audience helps bridge **language, culture, and time**. By combining **ancient wisdom** with **modern AI**, this project attempts to digitally honor a saint whose words still inspire millions.
-
+- Translate 100 ovis from Marathi (Devanagari) to English using **Meta’s NLLB model**
+- Assess the translation quality via sample comparisons and qualitative evaluation
+- Highlight challenges of translating **devotional, poetic texts** using machine models
 
 ---
 
-## Dataset
+## 📚 Dataset
 
-- Contains 100 Ovis with the following columns:
-  - `ovi_marathi`: Original Ovi in Marathi (Devanagari script)
-  - `ovi_english`: Manual English Translation
-  - `translated_by_model`: Output from MarianMT model
-  - `rougeL_score`: ROUGE-L F1 score for each model vs. manual translation
+- Input file: `Sant Tukaram Gatha.xlsx`
+- Contains original Marathi ovis in Devanagari script and human/manual English translations
 
 ---
 
-## Model Details
+## 🤖 Model Details
 
-- **Model used**: `Helsinki-NLP/opus-mt-mr-en` (Marathi to English)
+- **Model Used**: `facebook/nllb-200-distilled-600M`
 - **Library**: Hugging Face Transformers
 - **Backend**: PyTorch
 
 ```python
-from transformers import MarianMTModel, MarianTokenizer
+from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 
-model_name = "Helsinki-NLP/opus-mt-mr-en"
-tokenizer = MarianTokenizer.from_pretrained(model_name)
-model = MarianMTModel.from_pretrained(model_name)
+model_name = "facebook/nllb-200-distilled-600M"
+tokenizer = AutoTokenizer.from_pretrained(model_name)
+model = AutoModelForSeq2SeqLM.from_pretrained(model_name)
+
+tokenizer.src_lang = "mar_Deva"
+tokenizer.tgt_lang = "eng_Latn"
 ```
 
 ---
 
-## Evaluation Metric
+## 🔍 Sample Flow
 
-- Used **ROUGE-L F1 Score** to evaluate translation quality.
-- Captures semantic similarity via **longest common subsequence**.
-- Chosen over BLEU due to better alignment with poetic structure.
-
----
-
-## Key Results
-
-| Metric               | Value     |
-|----------------------|-----------|
-| Avg. ROUGE-L Score   | 0.0894    |
-| Max Score Observed   | ~0.3      |
-| Translation Quality  | Modest    |
-
-### Sample Comparison
-
-```
-🔸 Marathi Ovi:
-तुका म्हणे मागणे देवा । तुझा विसर नको मज ॥
-
-✅ Manual English:
-Tuka says, O Lord, all I ask is — never let me forget You.
-
-🤖 Model English:
-Don't pay attention to your identity.
+```python
+inputs = tokenizer(text, return_tensors="pt", padding=True)
+translated_tokens = model.generate(**inputs, forced_bos_token_id=tokenizer.lang_code_to_id["eng_Latn"])
+translated_text = tokenizer.batch_decode(translated_tokens, skip_special_tokens=True)
 ```
 
 ---
 
-## Observations
+## 🔎 Sample Translation Comparisons (from NLLB)
 
-- Model struggled with metaphor-rich, emotionally nuanced content.
-- Some translations were overly generic or contextually incorrect.
-- ROUGE-L was more effective than BLEU for this task.
-- Pretrained models require **fine-tuning on devotional data** for better results.
+### 1️⃣  
+📝 **Marathi Ovi**:  
+`तुका म्हणे मागणे देवा । तुझा विसर नको मज ॥`
 
----
+✅ **Manual Translation**:  
+*Tuka says: My only prayer, O Lord, is that I never forget You.*
 
-## Future Scope
-
-- Fine-tune MarianMT on a **larger corpus of Marathi devotional texts**.
-- Explore **IndicTrans2** or **human-AI post-editing pipelines**.
-- Apply **Named Entity Recognition (NER)** to extract spiritual references.
-- Build a **web-based Ovi translator or visualizer** using Streamlit or Flask.
+🤖 **Model Translation**:  
+*"Thou hast said, 'Pray, O God; forget not thy heart.' "*
 
 ---
 
-## Folder Structure
+### 2️⃣  
+📝 **Marathi Ovi**:  
+`दुःख सुखाचे काही नाही । जो तुजविण काही नाही ॥`
+
+✅ **Manual Translation**:  
+*There is neither pain nor pleasure for the one who has none but You.*
+
+🤖 **Model Translation**:  
+*There is no happiness in sorrow, there is no happiness in tears.*
+
+---
+
+### 3️⃣  
+📝 **Marathi Ovi**:  
+`नाम घेतले जिवी लाभे । शांती लाभे अंतःकरणा ॥`
+
+✅ **Manual Translation**:  
+*When I take Your name, my soul finds peace in my heart.*
+
+🤖 **Model Translation**:  
+*"Take your name and live your life. Peace be to your heart".*
+
+---
+
+### 4️⃣  
+📝 **Marathi Ovi**:  
+`उपकार देईन आयुष्य । पण नाव तुझे न विसरे ॥`
+
+✅ **Manual Translation**:  
+*I will spend my life for You, but I will never forget Your name.*
+
+🤖 **Model Translation**:  
+*I will give up my life, but your name will never be forgotten.*
+
+---
+
+
+## 📈 Evaluation Metrics
+
+| Metric         | Average Score |
+|----------------|---------------|
+| **ROUGE-L**    | ~0.2313      |
+| **BLEU**       | ~0.0249        |
+| **METEOR**     | ~0.1827       |
+
+These metrics reveal that while the model can produce fluent sentences, it struggles with the **contextual depth and spiritual fidelity** of Tukaram’s poetry.
+
+---
+
+## 🔮 Future Directions
+
+- Fine-tune NLLB on a corpus of **Marathi devotional texts**
+- Compare performance with **IndicTrans2**
+- Use **NER** for better handling of divine and cultural references
+- Build an **interactive Ovi translator** using Streamlit
+
+---
+
+## 📁 Folder Structure
 
 ```
-📁 NLP_Saint_Tukaram/
+NLP_Saint_Tukaram/
 │
-├── tukaram_ovis.xlsx               # Dataset of 100 Ovis
-├── NLP_Saint_Tukaram.ipynb         # Translation & evaluation notebook
-├── NLP Saint Tukaram.ipynb - Colab.pdf  # Exported notebook (PDF)
+├── Sant Tukaram Gatha.xlsx                   # Dataset of 100 ovis
+├── Final_Tukaram_Gatha.ipynb       # Notebook using NLLB model
 ├── README.md                       # Project documentation
 ```
 
 ---
 
-## Acknowledgements
+## 🙏 Acknowledgements
 
-- Sant Tukaram Maharaj and the Bhakti movement
-- HuggingFace Transformers team
-- Marathi literary translators and scholars
+- Sant Tukaram and the Bhakti tradition
+- Meta AI for open-sourcing the NLLB model
+- Hugging Face Transformers
+- Marathi translation experts
 
 ---
 
 ## 📜 License
 
 This project is licensed under the [MIT License](LICENSE).
+
